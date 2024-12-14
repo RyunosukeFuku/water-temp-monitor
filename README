@@ -4,7 +4,7 @@
 
 水温管理システムは、ラズパイで測った水温(または気温)を管理するためのシステムです。
 
-![UML図](./image/uml.png)
+![UML図](https://github.com/RyunosukeFuku/water-temp-monitor/blob/master/image/uml.png)
 
 
 ## 構築
