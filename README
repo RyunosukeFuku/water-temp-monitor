@@ -1,0 +1,69 @@
+# 水温管理システム
+
+## 概要
+
+水温管理システムは、ラズパイで測った水温(または気温)を管理するためのシステムです。
+
+```plantuml
+@startuml
+title ネットワーク構成図
+
+package "Wi-Fiネットワーク" {
+        rectangle "Raspberry Pi Pico W" {
+        [水温センサー]
+        [水温センサー] --> [Raspberry Pi Pico W] : 測定データ
+    }
+    rectangle "PC" {
+        component "Docker" {
+            [MySQL]
+            [Apache]
+        }
+        [Cron] --> [Raspberry Pi Pico W] : プログラム実行
+        [Apache] --> [MySQL] : データ保存
+        [ブラウザ] --> [Apache] : データ表示
+        [Raspberry Pi Pico W] --> [Apache] : 水温データ送信
+    }
+
+
+}
+
+rectangle "外部サービス" {
+    [天気情報API]
+    [PC] --> [天気情報API] : 天気情報取得
+    [天気情報API] --> [PC] : 天気データ
+}
+rectangle "庭" {
+    [水槽]
+    [水温センサー] --> [水槽] : 水温取得
+
+}
+
+@enduml
+
+```
+https://github.com/RyunosukeFuku/water-temp-rapspi-pico
+のラズパイピコと連動するシステムです。
+
+
+## 構築
+```
+docker compose build
+docker compose up -d
+```
+
+## 設定
+### cron
+ホストマシンPCのcronで設定
+毎時0分に自動実行
+```
+0 * * * * curl -X POST http://"ラズパイピコのIPアドレス"/measure_and_send
+```
+動作確認として手動実行も可能
+```
+curl -X POST http://"ラズパイピコのIPアドレス"/measure_and_send
+```
+
+
+
+
+
