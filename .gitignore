@@ -1,0 +1,5 @@
+# .envファイルを無視
+.env
+
+# Composer dependencies
+/vendor/
