@@ -1,0 +1,46 @@
+name: PR Summary Generator
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  summarize:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Get diff
+        run: |
+          git fetch origin main
+          git diff origin/main...HEAD > pr.diff
+
+      - name: Summarize diff
+        id: summarize
+        run: |
+          DIFF_CONTENT=$(cat pr.diff | head -c 4000 | jq -Rs .) # 長さ制限
+          RESPONSE=$(curl -s https://api.openai.com/v1/chat/completions \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${{ secrets.OPENAI_API_KEY }}" \
+            -d "{
+              \"model\": \"gpt-3.5-turbo\",
+              \"messages\": [
+                {\"role\": \"system\", \"content\": \"あなたは熟練したソフトウェアエンジニアです。gitの差分を日本語で要約してください。\"},
+                {\"role\": \"user\", \"content\": $DIFF_CONTENT }
+              ]
+            }")
+          SUMMARY=$(echo "$RESPONSE" | jq -r '.choices[0].message.content')
+          echo "summary=$SUMMARY" >> $GITHUB_OUTPUT
+
+      - name: Post summary as comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const summary = `${{ steps.summarize.outputs.summary }}`;
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `### PRの変更要約（AI生成）:\n\n${summary}`
+            });
