@@ -54,3 +54,9 @@ jobs:
               repo: context.repo.repo,
               body: `### PRの変更要約（AI生成）:\n\n${summary}`
             });
+
+      - name: Debug API response
+        run: |
+          RESPONSE='{"choices":[{"message":{"content":"これはテストです。"}}]}'
+          echo "$RESPONSE" | jq -r '.choices[0].message.content'
+    
