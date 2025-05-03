@@ -6,7 +6,7 @@ on:
 
 permissions:
   issues: write
-  pull_requests: write
+  pulls: write  # 'pull_requests' ではなく 'pulls' を使います
 
 jobs:
   summarize:
@@ -14,7 +14,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        
+
       - name: Get diff
         run: |
           git fetch origin master
