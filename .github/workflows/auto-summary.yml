@@ -13,8 +13,8 @@ jobs:
 
       - name: Get diff
         run: |
-          git fetch origin main
-          git diff origin/main...HEAD > pr.diff
+          git fetch origin master
+          git diff origin/master...HEAD > pr.diff
 
       - name: Summarize diff
         id: summarize
