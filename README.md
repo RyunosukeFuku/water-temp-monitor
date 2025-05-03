@@ -25,7 +25,8 @@ docker compose up -d
 curl -X POST http://"ラズパイピコのIPアドレス"/measure_and_send
 ```
 
-
+## aiコメント要約
+masterブランチからの差分をaiに要約させコメントする
 
 
 
