@@ -3,7 +3,7 @@ name: PR Summary Generator
 on:
   pull_request:
     types: [opened, synchronize]
-    workflow_dispatch: 
+  workflow_dispatch: 
 
 permissions:
   issues: write
