@@ -24,7 +24,9 @@ jobs:
       - name: Summarize diff
         id: summarize
         run: |
-          DIFF_CONTENT=$(cat pr.diff | head -c 4000 | jq -Rs .) # 長さ制限
+          DIFF_CONTENT=$(cat pr.diff | head -c 4000 | jq -Rs .)
+          echo "DIFF_CONTENT=$DIFF_CONTENT"
+          
           RESPONSE=$(curl -s https://api.openai.com/v1/chat/completions \
             -H "Content-Type: application/json" \
             -H "Authorization: Bearer ${{ secrets.OPENAI_API_KEY }}" \
@@ -35,7 +37,10 @@ jobs:
                 {\"role\": \"user\", \"content\": $DIFF_CONTENT }
               ]
             }")
+
+          echo "RESPONSE=$RESPONSE"  # ここでレスポンス内容を確認
           SUMMARY=$(echo "$RESPONSE" | jq -r '.choices[0].message.content')
+          echo "summary=$SUMMARY"
           echo "summary=$SUMMARY" >> $GITHUB_OUTPUT
 
       - name: Post summary as comment
