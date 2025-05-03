@@ -7,7 +7,7 @@ on:
 
 permissions:
   issues: write
-  pulls: write  # 'pull_requests' ではなく 'pulls' を使います
+  pull-requests: write # プルリクエストに関する操作（コメント含む）
 
 jobs:
   summarize:
